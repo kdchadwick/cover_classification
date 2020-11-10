@@ -27,11 +27,11 @@ mpl.use('Agg')
 def main():
     file_path = '~/Google Drive File Stream/My Drive/CB_share/NEON/cover_classification/extraction_output_20201106/cover_extraction.csv'
     #file_path = 'data/cover_extraction_20201021.csv'
-    layers_range = [2]
-    node_range = [250]
+    layers_range = [6]
+    node_range = [400]
     dropout_range = [0.4]
-    epochs_per_save = 20
-    iterations = 1
+    epochs_per_save = 1
+    iterations = 15
     run_name = 'data_splits_9'  # with scaling, weighting, and shade masking
     run_name = 'data_splits_10'  # with scaling, weighting and no shade masking
     run_name = 'data_splits_11'  # with scaling, weighting and inverted shade masking
@@ -39,13 +39,14 @@ def main():
     run_name = 'data_splits_13'  # with scaling, weighting, shade masking, no batch normalization, with bn
     run_name = 'data_splits_14'  # with scaling, weighting, no shade masking, no batch normalization, with bn, change sigmoid to linear
     run_name = 'data_splits_8'
-    run_name = 'data_splits_9'
+    run_name = 'test2' # with scaling, bn, weighting, shade masking
+    run_name = 'test3' # with scaling, bn, weighting, shade masking
     data_munge_dir = 'munged/' + run_name + '.npz'
     output_filename = 'output/' + run_name + '.npz'
 
-
     scaling=True
-    brightness_norm=True
+    brightness_norm=False
+    shade_mask=False
 
     # only reimport and munge data if this has not already been done, otherwise import data to save compute time
     if os.path.isfile(data_munge_dir):
@@ -58,7 +59,7 @@ def main():
         covertype = npzf['covertype']
         y_labels = npzf['y_labels'].tolist()
     else:
-        refl, Y, test, train, weights, covertype, y_labels = manage_datasets(file_path, run_name, shade_mask=False,
+        refl, Y, test, train, weights, covertype, y_labels = manage_datasets(file_path, run_name, shade_mask=shade_mask,
                                                                              category=None, scaling=scaling,
                                                                              brightness_norm=brightness_norm)
 
@@ -69,11 +70,6 @@ def main():
                                         n_epochs=epochs_per_save, its=iterations, layers_range=layers_range,
                                         node_range=node_range, dropout_range=dropout_range, classes=Y.shape[1],
                                         output_activation='sigmoid')
-
-    ##plotting_model_fits(Y, test, covertype, layers_range, node_range, dropout_range, y_labels)
-    # for cover in y_labels:
-    #    plotting_model_fits_singleclass(output_filename, test, covertype, layers_range, node_range, dropout_range,
-    #                                    matchcover=cover, classlabels=y_labels)
 
     plot_confusion_matrix(output_filename, train, np.argmax(Y,axis=1), layers_range, node_range, dropout_range, y_labels)
 
@@ -87,7 +83,8 @@ def main():
     if os.path.isfile(model_file) is False:
         raise AttributeError(f'cant find model file: {model_file}')
 
-    apply_model(model_file,'data_subset/refl_subset','data_subset/test_out.tif',bn=brightness_norm, scaler=scaling_file, argmax=True)
+    apply_model(model_file, 'raster_data/refl_subset', run_name+'.tif',
+                bn=brightness_norm, scaler=scaling_file, argmax=True)
 
 
 
@@ -239,7 +236,7 @@ def nn_model(refl, num_layers, num_nodes, classes, dropout, loss_function, outpu
     model = keras.models.Model(inputs=[inlayer], outputs=[output_layer])
 
     # Optimization function and loss functions defined here - leave as is for now
-    optimizer=keras.optimizers.Adam(learning_rate=0.001)
+    optimizer = keras.optimizers.Adam(learning_rate=0.001)
     model.compile(loss=loss_function, optimizer=optimizer) # change loss function to categorical_crossentropy
 
     return model
