@@ -40,13 +40,15 @@ def main():
     run_name = 'data_splits_14'  # with scaling, weighting, no shade masking, no batch normalization, with bn, change sigmoid to linear
     run_name = 'data_splits_8'
     run_name = 'test2' # with scaling, bn, weighting, shade masking
-    run_name = 'test3' # with scaling, bn, weighting, shade masking
+    run_name = 'test4' # with scaling, no bn, weighting, no shade masking
+    run_name = 'test5'  # with scaling, bn, weighting, shade masking
     data_munge_dir = 'munged/' + run_name + '.npz'
     output_filename = 'output/' + run_name + '.npz'
 
-    scaling=True
-    brightness_norm=False
-    shade_mask=False
+    scaling = True
+    brightness_norm = True
+    shade_mask = True
+    weighting = True
 
     # only reimport and munge data if this has not already been done, otherwise import data to save compute time
     if os.path.isfile(data_munge_dir):
@@ -61,7 +63,7 @@ def main():
     else:
         refl, Y, test, train, weights, covertype, y_labels = manage_datasets(file_path, run_name, shade_mask=shade_mask,
                                                                              category=None, scaling=scaling,
-                                                                             brightness_norm=brightness_norm)
+                                                                             brightness_norm=brightness_norm, weighting=weighting)
 
         np.savez(data_munge_dir, refl=refl, Y=Y, test=test, train=train, weights=weights, covertype=covertype, y_labels=y_labels)
 

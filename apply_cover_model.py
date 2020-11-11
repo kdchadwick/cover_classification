@@ -84,8 +84,8 @@ def apply_model(model_file: str, refl_dat_f: str, output_name: str, bn: bool = T
     outDataset.SetGeoTransform(dataset.GetGeoTransform())
     
     # loop through lines [y]
-    #for l in tqdm(range(0, max_y), ncols=80):
-    for l in tqdm(range(0, 200), ncols=80):
+    for l in tqdm(range(0, max_y), ncols=80):
+    #for l in tqdm(range(0, 200), ncols=80):
         dat = np.squeeze(dataset.ReadAsArray(0, l, max_x, 1)).astype(np.float32)
         dat = dat[np.logical_not(full_bad_bands), ...]
         dat = np.transpose(dat)
