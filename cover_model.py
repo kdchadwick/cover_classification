@@ -26,6 +26,7 @@ mpl.use('Agg')
 
 def main():
     file_path = '~/Google Drive File Stream/My Drive/CB_share/NEON/cover_classification/extraction_output_20201106/cover_extraction.csv'
+    file_path = '~/Google Drive File Stream/My Drive/CB_share/NEON/cover_classification/extraction_output_20201111/cover_extraction.csv'
     #file_path = 'data/cover_extraction_20201021.csv'
     layers_range = [6]
     node_range = [400]
@@ -42,10 +43,16 @@ def main():
     run_name = 'test2' # with scaling, bn, weighting, shade masking
     run_name = 'test4' # with scaling, no bn, weighting, no shade masking
     run_name = 'test5'  # with scaling, bn, weighting, shade masking
+    run_name = 'new_extract_1' # with scaling, bn, weighting, shade masking
+    run_name = 'new_extract_2' # with scaling, no bn, weighting, shade masking
+    run_name = 'new_extract_3'  # with scaling, no bn, weighting, shade masking, wtrl
+    run_name = 'new_extract_4'  # with no scaling, bn, weighting, shade masking
+    run_name = 'new_extract_5'  # with no scaling, bn, weighting, no shade masking
+
     data_munge_dir = 'munged/' + run_name + '.npz'
     output_filename = 'output/' + run_name + '.npz'
 
-    scaling = True
+    scaling = False
     brightness_norm = True
     shade_mask = True
     weighting = True
@@ -62,7 +69,7 @@ def main():
         y_labels = npzf['y_labels'].tolist()
     else:
         refl, Y, test, train, weights, covertype, y_labels = manage_datasets(file_path, run_name, shade_mask=shade_mask,
-                                                                             category=None, scaling=scaling,
+                                                                             category=None, scaling=scaling, wtrl_include=False,
                                                                              brightness_norm=brightness_norm, weighting=weighting)
 
         np.savez(data_munge_dir, refl=refl, Y=Y, test=test, train=train, weights=weights, covertype=covertype, y_labels=y_labels)
