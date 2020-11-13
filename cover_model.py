@@ -27,12 +27,13 @@ mpl.use('Agg')
 def main():
     file_path = '~/Google Drive File Stream/My Drive/CB_share/NEON/cover_classification/extraction_output_20201106/cover_extraction.csv'
     file_path = '~/Google Drive File Stream/My Drive/CB_share/NEON/cover_classification/extraction_output_20201111/cover_extraction.csv'
+    file_path = '~/Google Drive File Stream/My Drive/CB_share/NEON/cover_classification/extraction_output_20201112/cover_extraction.csv'
     #file_path = 'data/cover_extraction_20201021.csv'
-    layers_range = [6]
+    layers_range = [4, 6]
     node_range = [400]
     dropout_range = [0.4]
-    epochs_per_save = 1
-    iterations = 15
+    epochs_per_save = 2
+    iterations = 30
     run_name = 'data_splits_9'  # with scaling, weighting, and shade masking
     run_name = 'data_splits_10'  # with scaling, weighting and no shade masking
     run_name = 'data_splits_11'  # with scaling, weighting and inverted shade masking
@@ -48,12 +49,14 @@ def main():
     run_name = 'new_extract_3'  # with scaling, no bn, weighting, shade masking, wtrl
     run_name = 'new_extract_4'  # with no scaling, bn, weighting, shade masking
     run_name = 'new_extract_5'  # with no scaling, bn, weighting, no shade masking
+    run_name = 'new_extract_v2_6'  # with no scaling, bn, weighting, shade masking
+    run_name = 'new_extract_v2_7'  # with scaling, no bn, weighting, shade masking
 
     data_munge_dir = 'munged/' + run_name + '.npz'
     output_filename = 'output/' + run_name + '.npz'
 
-    scaling = False
-    brightness_norm = True
+    scaling = True
+    brightness_norm = False
     shade_mask = True
     weighting = True
 
@@ -92,10 +95,9 @@ def main():
     if os.path.isfile(model_file) is False:
         raise AttributeError(f'cant find model file: {model_file}')
 
-    apply_model(model_file, 'raster_data/refl_subset', run_name+'.tif',
+    apply_model(model_file, 'raster_data/refl_subset',
+                f'{run_name}_nl_{layers_range[0]}_dr_{dropout_range[0]}_nn_{node_range[0]}_it_{iterations-1}.tif',
                 bn=brightness_norm, scaler=scaling_file, argmax=True)
-
-
 
 
 
@@ -245,7 +247,7 @@ def nn_model(refl, num_layers, num_nodes, classes, dropout, loss_function, outpu
     model = keras.models.Model(inputs=[inlayer], outputs=[output_layer])
 
     # Optimization function and loss functions defined here - leave as is for now
-    optimizer = keras.optimizers.Adam(learning_rate=0.001)
+    optimizer = keras.optimizers.Adam(learning_rate=0.0005)
     model.compile(loss=loss_function, optimizer=optimizer) # change loss function to categorical_crossentropy
 
     return model
