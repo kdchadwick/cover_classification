@@ -28,35 +28,24 @@ def main():
     file_path = '~/Google Drive File Stream/My Drive/CB_share/NEON/cover_classification/extraction_output_20201106/cover_extraction.csv'
     file_path = '~/Google Drive File Stream/My Drive/CB_share/NEON/cover_classification/extraction_output_20201111/cover_extraction.csv'
     file_path = '~/Google Drive File Stream/My Drive/CB_share/NEON/cover_classification/extraction_output_20201112/cover_extraction.csv'
-    #file_path = 'data/cover_extraction_20201021.csv'
-    layers_range = [4, 6]
-    node_range = [400]
+    #file_path = '~/Google Drive File Stream/My Drive/CB_share/NEON/cover_classification/extraction_output_20201113/cover_extraction.csv'
+    file_path = '~/Google Drive File Stream/My Drive/CB_share/NEON/cover_classification/extraction_output_20201113b/cover_extraction.csv'
+    layers_range = [6]
+    node_range = [200,400,600]
     dropout_range = [0.4]
-    epochs_per_save = 2
-    iterations = 30
-    run_name = 'data_splits_9'  # with scaling, weighting, and shade masking
-    run_name = 'data_splits_10'  # with scaling, weighting and no shade masking
-    run_name = 'data_splits_11'  # with scaling, weighting and inverted shade masking
-    run_name = 'data_splits_12'  # with scaling, weighting and shade masking, without bn
-    run_name = 'data_splits_13'  # with scaling, weighting, shade masking, no batch normalization, with bn
-    run_name = 'data_splits_14'  # with scaling, weighting, no shade masking, no batch normalization, with bn, change sigmoid to linear
-    run_name = 'data_splits_8'
-    run_name = 'test2' # with scaling, bn, weighting, shade masking
-    run_name = 'test4' # with scaling, no bn, weighting, no shade masking
-    run_name = 'test5'  # with scaling, bn, weighting, shade masking
-    run_name = 'new_extract_1' # with scaling, bn, weighting, shade masking
-    run_name = 'new_extract_2' # with scaling, no bn, weighting, shade masking
-    run_name = 'new_extract_3'  # with scaling, no bn, weighting, shade masking, wtrl
-    run_name = 'new_extract_4'  # with no scaling, bn, weighting, shade masking
-    run_name = 'new_extract_5'  # with no scaling, bn, weighting, no shade masking
-    run_name = 'new_extract_v2_6'  # with no scaling, bn, weighting, shade masking
-    run_name = 'new_extract_v2_7'  # with scaling, no bn, weighting, shade masking
+    epochs_per_save = 3
+    iterations = 5
+    run_name = 'extract_1111_'  # with scaling, bn, weighting, no shade masking
+    run_name = 'extract_1112_'  # with scaling, bn, weighting, no shade masking
+    run_name = 'extract_1113_'  # with scaling, bn, weighting, no shade masking
+    run_name = 'extract_1113_nw_'  # with scaling, bn, no weighting, no shade masking
+    run_name = 'extract_1113b_'  # with scaling, bn, weighting, shade masking
 
     data_munge_dir = 'munged/' + run_name + '.npz'
     output_filename = 'output/' + run_name + '.npz'
 
     scaling = True
-    brightness_norm = False
+    brightness_norm = True
     shade_mask = True
     weighting = True
 
@@ -81,24 +70,19 @@ def main():
     preds, dim_names = nn_scenario_test(output_filename, refl, Y, weights, test, train, y_labels, covertype, run_name,
                                         n_epochs=epochs_per_save, its=iterations, layers_range=layers_range,
                                         node_range=node_range, dropout_range=dropout_range, classes=Y.shape[1],
-                                        output_activation='sigmoid')
+                                        output_activation='sigmoid', brightness_norm=brightness_norm)
 
     plot_confusion_matrix(output_filename, train, np.argmax(Y,axis=1), layers_range, node_range, dropout_range, y_labels)
 
-    scaling_file=None
-    if scaling:
-        scaling_file='output/trained_models/nn_cover_scaler_' + run_name + '.pkl'
-        if os.path.isfile(scaling_file) is False:
-            raise AttributeError(f'cant find scaling file: {scaling_file}')
+    # scaling_file=None
+    # if scaling:
+    #     scaling_file='output/trained_models/nn_cover_scaler_' + run_name + '.pkl'
+    #     if os.path.isfile(scaling_file) is False:
+    #         raise AttributeError(f'cant find scaling file: {scaling_file}')
 
-    model_file = f'output/trained_models/cover_model{run_name}_nl_{layers_range[0]}_dr_{dropout_range[0]}_nn_{node_range[0]}_it_{iterations-1}.h5'
-    if os.path.isfile(model_file) is False:
-        raise AttributeError(f'cant find model file: {model_file}')
-
-    apply_model(model_file, 'raster_data/refl_subset',
-                f'{run_name}_nl_{layers_range[0]}_dr_{dropout_range[0]}_nn_{node_range[0]}_it_{iterations-1}.tif',
-                bn=brightness_norm, scaler=scaling_file, argmax=True)
-
+    # model_file = f'output/trained_models/cover_model{run_name}_nl_{layers_range[0]}_dr_{dropout_range[0]}_nn_{node_range[0]}_it_{iterations-1}.h5'
+    # if os.path.isfile(model_file) is False:
+    #     raise AttributeError(f'cant find model file: {model_file}')
 
 
 
@@ -254,7 +238,7 @@ def nn_model(refl, num_layers, num_nodes, classes, dropout, loss_function, outpu
 
 
 def nn_scenario_test(output_filename, refl, Y, weights, test, train, y_labels, covertype, run_name,
-                     layers_range=[4], node_range=[400], classes=2, dropout_range=[0.4],
+                     layers_range=[4], node_range=[400], classes=2, dropout_range=[0.4], brightness_norm=True, scaling=True,
                      loss_function='categorical_crossentropy', output_activation='sigmoid', n_epochs=5, its=20):
 
     predictions = np.zeros((len(layers_range), len(dropout_range), len(node_range), len(range(its)), len(Y))).astype(np.float32)
@@ -288,6 +272,23 @@ def nn_scenario_test(output_filename, refl, Y, weights, test, train, y_labels, c
                 for cover in y_labels:
                     plotting_model_fits_singleclass(output_filename, test, covertype, layers_range, node_range, dropout_range,
                                                     matchcover=cover, classlabels=y_labels)
+                b=0
+                if brightness_norm:
+                    b=1
+
+                scaling_file = None
+                if scaling:
+                    scaling_file = 'output/trained_models/nn_cover_scaler_' + run_name + '.pkl'
+                    if os.path.isfile(scaling_file) is False:
+                        raise AttributeError(f'cant find scaling file: {scaling_file}')
+
+                model_file = f'output/trained_models/cover_model{run_name}_nl_{nl}_dr_{dr}_nn_{nn}_it_{_i}.h5'
+                if os.path.isfile(model_file) is False:
+                    raise AttributeError(f'cant find model file: {model_file}')
+
+                apply_model(model_file, 'raster_data/refl_subset',
+                            f'output/rasters/{run_name}_nl_{nl}_dr_{dr}_nn_{nn}_it_{_i}.tif',
+                            bn=b, scaler=scaling_file, argmax=True)
 
     return predictions, dim_names
 
