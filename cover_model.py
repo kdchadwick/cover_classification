@@ -28,26 +28,30 @@ def main():
     file_path = '~/Google Drive File Stream/My Drive/CB_share/NEON/cover_classification/extraction_output_20201106/cover_extraction.csv'
     file_path = '~/Google Drive File Stream/My Drive/CB_share/NEON/cover_classification/extraction_output_20201111/cover_extraction.csv'
     file_path = '~/Google Drive File Stream/My Drive/CB_share/NEON/cover_classification/extraction_output_20201112/cover_extraction.csv'
-    #file_path = '~/Google Drive File Stream/My Drive/CB_share/NEON/cover_classification/extraction_output_20201113/cover_extraction.csv'
+    file_path = '~/Google Drive File Stream/My Drive/CB_share/NEON/cover_classification/extraction_output_20201113/cover_extraction.csv'
     file_path = '~/Google Drive File Stream/My Drive/CB_share/NEON/cover_classification/extraction_output_20201113b/cover_extraction.csv'
+    file_path = '~/Google Drive File Stream/My Drive/CB_share/NEON/cover_classification/output_20201115/cover_extraction.csv'
     layers_range = [6]
-    node_range = [200,400,600]
+    node_range = [200,400]
     dropout_range = [0.4]
     epochs_per_save = 3
-    iterations = 5
+    iterations = 20
     run_name = 'extract_1111_'  # with scaling, bn, weighting, no shade masking
     run_name = 'extract_1112_'  # with scaling, bn, weighting, no shade masking
     run_name = 'extract_1113_'  # with scaling, bn, weighting, no shade masking
     run_name = 'extract_1113_nw_'  # with scaling, bn, no weighting, no shade masking
     run_name = 'extract_1113b_'  # with scaling, bn, weighting, shade masking
-
+    run_name = 'extract_1113b_nw_'  # with scaling, bn, no weighting, shade masking
+    run_name = 'extract_1115_'  # with scaling, bn, weighting, shade masking
+    run_name = 'extract_1115_ns_'  # with scaling, bn, weighting, shade masking
+    run_name = 'extract_1115_nw'  # with no scaling, bn, no weighting, no shade masking
     data_munge_dir = 'munged/' + run_name + '.npz'
     output_filename = 'output/' + run_name + '.npz'
 
     scaling = True
     brightness_norm = True
-    shade_mask = True
-    weighting = True
+    shade_mask = False
+    weighting = False
 
     # only reimport and munge data if this has not already been done, otherwise import data to save compute time
     if os.path.isfile(data_munge_dir):
