@@ -25,30 +25,22 @@ mpl.use('Agg')
 
 
 def main():
-    file_path = '~/Google Drive File Stream/My Drive/CB_share/NEON/cover_classification/extraction_output_20201106/cover_extraction.csv'
-    file_path = '~/Google Drive File Stream/My Drive/CB_share/NEON/cover_classification/extraction_output_20201111/cover_extraction.csv'
-    file_path = '~/Google Drive File Stream/My Drive/CB_share/NEON/cover_classification/extraction_output_20201112/cover_extraction.csv'
-    file_path = '~/Google Drive File Stream/My Drive/CB_share/NEON/cover_classification/extraction_output_20201113/cover_extraction.csv'
-    file_path = '~/Google Drive File Stream/My Drive/CB_share/NEON/cover_classification/extraction_output_20201113b/cover_extraction.csv'
-    file_path = '~/Google Drive File Stream/My Drive/CB_share/NEON/cover_classification/output_20201115/cover_extraction.csv'
+    file_path = '~/Google Drive File Stream/My Drive/CB_share/NEON/cover_classification/output_20201116_originals_2/cover_extraction.csv'
+    file_path = '~/Google Drive File Stream/My Drive/CB_share/NEON/cover_classification/output_20201116_originals/cover_extraction.csv'
     layers_range = [6]
-    node_range = [200,400]
+    node_range = [400]
     dropout_range = [0.4]
     epochs_per_save = 3
-    iterations = 20
-    run_name = 'extract_1111_'  # with scaling, bn, weighting, no shade masking
-    run_name = 'extract_1112_'  # with scaling, bn, weighting, no shade masking
-    run_name = 'extract_1113_'  # with scaling, bn, weighting, no shade masking
-    run_name = 'extract_1113_nw_'  # with scaling, bn, no weighting, no shade masking
-    run_name = 'extract_1113b_'  # with scaling, bn, weighting, shade masking
-    run_name = 'extract_1113b_nw_'  # with scaling, bn, no weighting, shade masking
-    run_name = 'extract_1115_'  # with scaling, bn, weighting, shade masking
-    run_name = 'extract_1115_ns_'  # with scaling, bn, weighting, shade masking
-    run_name = 'extract_1115_nw'  # with no scaling, bn, no weighting, no shade masking
+    iterations = 15
+    run_name = 'extract_1116_2'  # with scaling, bn, weighting, no shade masking
+    run_name = 'extract_1116_2_v2'  # with no scaling, bn, weighting, no shade masking
+    run_name = 'extract_1116_2_v3'  # with no scaling, bn, weighting, shade masking
+    run_name = 'extract_1116_2_noBatch'  # with no scaling, bn, weighting, no shade masking, batch normalization
+    run_name = 'extract_1116_v2_nw'  # with no scaling, bn, no weighting, no shade masking, batch normalization
     data_munge_dir = 'munged/' + run_name + '.npz'
     output_filename = 'output/' + run_name + '.npz'
 
-    scaling = True
+    scaling = False
     brightness_norm = True
     shade_mask = False
     weighting = False
@@ -74,7 +66,7 @@ def main():
     preds, dim_names = nn_scenario_test(output_filename, refl, Y, weights, test, train, y_labels, covertype, run_name,
                                         n_epochs=epochs_per_save, its=iterations, layers_range=layers_range,
                                         node_range=node_range, dropout_range=dropout_range, classes=Y.shape[1],
-                                        output_activation='sigmoid', brightness_norm=brightness_norm)
+                                        output_activation='sigmoid', brightness_norm=brightness_norm, scaling=scaling)
 
     plot_confusion_matrix(output_filename, train, np.argmax(Y,axis=1), layers_range, node_range, dropout_range, y_labels)
 
@@ -235,7 +227,7 @@ def nn_model(refl, num_layers, num_nodes, classes, dropout, loss_function, outpu
     model = keras.models.Model(inputs=[inlayer], outputs=[output_layer])
 
     # Optimization function and loss functions defined here - leave as is for now
-    optimizer = keras.optimizers.Adam(learning_rate=0.0005)
+    optimizer = keras.optimizers.Adam(learning_rate=0.001)
     model.compile(loss=loss_function, optimizer=optimizer) # change loss function to categorical_crossentropy
 
     return model

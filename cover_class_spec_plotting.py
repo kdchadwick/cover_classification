@@ -16,7 +16,7 @@ plt.rcParams['axes.labelpad'] = 6
 
 
 def main():
-    file_path = '~/Google Drive File Stream/My Drive/CB_share/NEON/cover_classification/extraction_output/cover_extraction_20201021.csv'
+    file_path = '~/Google Drive File Stream/My Drive/CB_share/NEON/cover_classification/output_20201116_originals/cover_extraction.csv'
     wavelengths_file = 'raster_data/neon_wavelengths.txt'
     spectra, cover_types, wv = spec_cleaning(file_path, wavelengths_file, 'refl_B_')
     plot_avg_spectra(spectra, cover_types, wv)
@@ -66,7 +66,7 @@ def plot_avg_spectra(spectra, cover_types, wv, brightness_normalize=False):
 
     c_types = cover_types.unique()
 
-    color_sets = ['navy', 'tan', 'forestgreen', 'royalblue', 'gray', 'darkorange', 'black', 'brown', 'purple']
+    color_sets = ['navy', 'tan', 'forestgreen', 'royalblue', 'gray', 'darkorange', 'black', 'brown', 'purple', 'red', 'yellow']
 
     # Plot the difference between needles and noneedles in reflectance data
     figure_export_settings = {'dpi': 200, 'bbox_inches': 'tight'}
