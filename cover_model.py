@@ -27,23 +27,28 @@ mpl.use('Agg')
 def main():
     file_path = '~/Google Drive File Stream/My Drive/CB_share/NEON/cover_classification/output_20201116_originals_2/cover_extraction.csv'
     file_path = '~/Google Drive File Stream/My Drive/CB_share/NEON/cover_classification/output_20201116_originals/cover_extraction.csv'
-    layers_range = [6]
-    node_range = [400]
+    file_path = '~/Google Drive File Stream/My Drive/CB_share/NEON/cover_classification/output_20201118/cover_extraction.csv'
+    layers_range = [4, 6]
+    node_range = [200, 400, 600]
     dropout_range = [0.4]
     epochs_per_save = 3
-    iterations = 15
+    iterations = 10
     run_name = 'extract_1116_2'  # with scaling, bn, weighting, no shade masking
     run_name = 'extract_1116_2_v2'  # with no scaling, bn, weighting, no shade masking
     run_name = 'extract_1116_2_v3'  # with no scaling, bn, weighting, shade masking
     run_name = 'extract_1116_2_noBatch'  # with no scaling, bn, weighting, no shade masking, batch normalization
     run_name = 'extract_1116_v2_nw'  # with no scaling, bn, no weighting, no shade masking, batch normalization
+    run_name = 'extract_1118_v1'  # with no scaling, bn, weighting, no shade masking, batch normalization
+    run_name = 'extract_1118_v2'  # with no scaling, bn, no weighting, no shade masking, batch normalization
+    run_name = 'extract_1118_v3'  # with no scaling, bn, weighting, no shade masking, batch normalization
+
     data_munge_dir = 'munged/' + run_name + '.npz'
     output_filename = 'output/' + run_name + '.npz'
 
     scaling = False
     brightness_norm = True
     shade_mask = False
-    weighting = False
+    weighting = True
 
     # only reimport and munge data if this has not already been done, otherwise import data to save compute time
     if os.path.isfile(data_munge_dir):
