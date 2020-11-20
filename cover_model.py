@@ -28,6 +28,7 @@ def main():
     file_path = '~/Google Drive File Stream/My Drive/CB_share/NEON/cover_classification/output_20201116_originals_2/cover_extraction.csv'
     file_path = '~/Google Drive File Stream/My Drive/CB_share/NEON/cover_classification/output_20201116_originals/cover_extraction.csv'
     file_path = '~/Google Drive File Stream/My Drive/CB_share/NEON/cover_classification/output_20201118/cover_extraction.csv'
+    file_path = '~/Google Drive File Stream/My Drive/CB_share/NEON/cover_classification/output_20201118b/cover_extraction.csv'
     layers_range = [4, 6]
     node_range = [200, 400, 600]
     dropout_range = [0.4]
@@ -41,6 +42,7 @@ def main():
     run_name = 'extract_1118_v1'  # with no scaling, bn, weighting, no shade masking, batch normalization
     run_name = 'extract_1118_v2'  # with no scaling, bn, no weighting, no shade masking, batch normalization
     run_name = 'extract_1118_v3'  # with no scaling, bn, weighting, no shade masking, batch normalization
+    run_name = 'extract_1119_v1'  # with no scaling, bn, weighting, no shade masking, batch normalization
 
     data_munge_dir = 'munged/' + run_name + '.npz'
     output_filename = 'output/' + run_name + '.npz'
