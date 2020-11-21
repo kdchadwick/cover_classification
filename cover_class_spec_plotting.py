@@ -16,10 +16,11 @@ plt.rcParams['axes.labelpad'] = 6
 
 
 def main():
-    file_path = '~/Google Drive File Stream/My Drive/CB_share/NEON/cover_classification/output_20201116_originals/cover_extraction.csv'
+    file_path = '~/Google Drive File Stream/My Drive/CB_share/NEON/cover_classification/output_20201120/cover_extraction.csv'
+    name = '20201120_bn'
     wavelengths_file = 'raster_data/neon_wavelengths.txt'
     spectra, cover_types, wv = spec_cleaning(file_path, wavelengths_file, 'refl_B_')
-    plot_avg_spectra(spectra, cover_types, wv)
+    plot_avg_spectra(spectra, cover_types, wv, name, brightness_normalize=True)
 
 
 def find_nearest(array_like, v):
@@ -62,7 +63,7 @@ def spec_cleaning(file_path, wavelengths_file, band_preface):
     return spectra, cover_types, wv
 
 
-def plot_avg_spectra(spectra, cover_types, wv, brightness_normalize=False):
+def plot_avg_spectra(spectra, cover_types, wv, name, brightness_normalize=False):
 
     c_types = cover_types.unique()
 
@@ -93,7 +94,7 @@ def plot_avg_spectra(spectra, cover_types, wv, brightness_normalize=False):
         plt.ylabel('Reflectance (%)')
     plt.xlabel('Wavelength (nm)')
 
-    plt.savefig(os.path.join('figs', 'class_spectra.png'), **figure_export_settings)
+    plt.savefig(os.path.join('figs', name + '_class_spectra.png'), **figure_export_settings)
     del fig
 
 
