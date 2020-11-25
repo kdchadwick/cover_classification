@@ -25,22 +25,24 @@ mpl.use('Agg')
 
 
 def main():
-    file_path = '~/Google Drive File Stream/My Drive/CB_share/NEON/cover_classification/output_20201116_originals_2/cover_extraction.csv'
-    file_path = '~/Google Drive File Stream/My Drive/CB_share/NEON/cover_classification/output_20201116_originals/cover_extraction.csv'
+    #file_path = '~/Google Drive File Stream/My Drive/CB_share/NEON/cover_classification/output_20201116_originals_2/cover_extraction.csv'
+    #file_path = '~/Google Drive File Stream/My Drive/CB_share/NEON/cover_classification/output_20201116_originals/cover_extraction.csv'
     # file_path = '~/Google Drive File Stream/My Drive/CB_share/NEON/cover_classification/output_20201118/cover_extraction.csv'
     #file_path = '~/Google Drive File Stream/My Drive/CB_share/NEON/cover_classification/output_20201118b/cover_extraction.csv'
     #file_path = '~/Google Drive File Stream/My Drive/CB_share/NEON/cover_classification/output_20201120/cover_extraction.csv'
+    file_path = '~/Google Drive File Stream/My Drive/CB_share/NEON/cover_classification/output_20201123/cover_extraction.csv'
 
     layers_range = [4, 6]
     node_range = [200, 400]
     dropout_range = [0.4]
-    epochs_per_save = 4
+    epochs_per_save = 3
     iterations = 10
 
     run_name = 'extract_1120_v1'  # with no scaling, bn, weighting, no shade masking, batch normalization
     run_name = 'extract_1120_v2'  # with scaling, bn, weighting, no shade masking, batch normalization
     run_name = 'extract_1118_v1'  # with scaling, bn, weighting, no shade masking, batch normalization
     run_name = 'extract_originals_v1'  # with scaling, bn, weighting, no shade masking, batch normalization
+    run_name = 'extract_1123'  # with scaling, bn, weighting, no shade masking, batch normalization
     data_munge_dir = 'munged/' + run_name + '.npz'
     output_filename = 'output/' + run_name + '.npz'
 
